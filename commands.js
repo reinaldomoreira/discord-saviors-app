@@ -1,49 +1,34 @@
 import 'dotenv/config';
-import { getRPSChoices } from './game.js';
-import { capitalize, InstallGlobalCommands } from './utils.js';
+import {getRPSChoices} from './game.js';
+import {capitalize, InstallGlobalCommands} from './utils.js';
 
-// Get the game choices from game.js
-function createCommandChoices() {
-  const choices = getRPSChoices();
-  const commandChoices = [];
-
-  for (let choice of choices) {
-    commandChoices.push({
-      name: capitalize(choice),
-      value: choice.toLowerCase(),
-    });
-  }
-
-  return commandChoices;
+const APPLICATION_COMMAND_TYPES = {
+    CHAT_INPUT: 1, // 	Slash commands; a text-based command that shows up when a user types /
+    USER: 2, // A UI-based command that shows up when you right click or tap on a user
+    MESSAGE: 3, // A UI-based command that shows up when you right click or tap on a message
+    PRIMARY_ENTRY_POINT: 4 // A UI-based command that represents the primary way to invoke an app's Activity
 }
 
-// Simple test command
-const TEST_COMMAND = {
-  name: 'test',
-  description: 'Basic command',
-  type: 1,
-  integration_types: [0, 1],
-  contexts: [0, 1, 2],
+const INTERACTION_CONTEXT_TYPES = {
+    GUILD: 0, // Interaction can be used within servers
+    BOT_DM: 1, // Interaction can be used within DMs with the app's bot user
+    PRIVATE_CHANNEL: 2 // Interaction can be used within Group DMs and DMs other than the app's bot user
+}
+
+const INTEGRATION_TYPES = {
+    GUILD_INSTALL: 0,
+    USER_INSTALL: 1
+}
+
+const REGISTER_NEW_SURVIVOR_COMMAND = {
+    name: 'registernewsurvivor',
+    description: 'Tag user, create password and send it to user',
+    type: APPLICATION_COMMAND_TYPES.CHAT_INPUT,
+    integration_types: [INTEGRATION_TYPES.GUILD_INSTALL],
+    contexts: [INTERACTION_CONTEXT_TYPES.GUILD, INTERACTION_CONTEXT_TYPES.BOT_DM],
 };
 
-// Command containing options
-const CHALLENGE_COMMAND = {
-  name: 'challenge',
-  description: 'Challenge to a match of rock paper scissors',
-  options: [
-    {
-      type: 3,
-      name: 'object',
-      description: 'Pick your object',
-      required: true,
-      choices: createCommandChoices(),
-    },
-  ],
-  type: 1,
-  integration_types: [0, 1],
-  contexts: [0, 2],
-};
 
-const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND];
+const ALL_COMMANDS = [REGISTER_NEW_SURVIVOR_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
