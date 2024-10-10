@@ -1,34 +1,50 @@
-import 'dotenv/config';
-import {getRPSChoices} from './game.js';
-import {capitalize, InstallGlobalCommands} from './utils.js';
+require('dotenv/config');
 
-const APPLICATION_COMMAND_TYPES = {
-    CHAT_INPUT: 1, // 	Slash commands; a text-based command that shows up when a user types /
-    USER: 2, // A UI-based command that shows up when you right click or tap on a user
-    MESSAGE: 3, // A UI-based command that shows up when you right click or tap on a message
-    PRIMARY_ENTRY_POINT: 4 // A UI-based command that represents the primary way to invoke an app's Activity
+const { REST, Routes } = require('discord.js');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const token = process.env.DISCORD_TOKEN;
+const clientId = process.env.APP_ID;
+const guildId = process.env.GUILD_ID;
+
+const commands = [];
+// Grab all the command folders from the commands directory you created earlier
+const foldersPath = path.join(__dirname, 'commands');
+const commandFolders = fs.readdirSync(foldersPath);
+
+for (const folder of commandFolders) {
+    // Grab all the command files from the commands directory you created earlier
+    const commandsPath = path.join(foldersPath, folder);
+    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+    // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+    for (const file of commandFiles) {
+        const filePath = path.join(commandsPath, file);
+        const command = require(filePath);
+        if ('data' in command && 'execute' in command) {
+            commands.push(command.data.toJSON());
+        } else {
+            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+        }
+    }
 }
 
-const INTERACTION_CONTEXT_TYPES = {
-    GUILD: 0, // Interaction can be used within servers
-    BOT_DM: 1, // Interaction can be used within DMs with the app's bot user
-    PRIVATE_CHANNEL: 2 // Interaction can be used within Group DMs and DMs other than the app's bot user
-}
+// Construct and prepare an instance of the REST module
+const rest = new REST().setToken(token);
 
-const INTEGRATION_TYPES = {
-    GUILD_INSTALL: 0,
-    USER_INSTALL: 1
-}
+// and deploy your commands!
+(async () => {
+    try {
+        console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-const REGISTER_NEW_SURVIVOR_COMMAND = {
-    name: 'registernewsurvivor',
-    description: 'Tag user, create password and send it to user',
-    type: APPLICATION_COMMAND_TYPES.CHAT_INPUT,
-    integration_types: [INTEGRATION_TYPES.GUILD_INSTALL],
-    contexts: [INTERACTION_CONTEXT_TYPES.GUILD, INTERACTION_CONTEXT_TYPES.BOT_DM],
-};
+        const data = await rest.put(
+            Routes.applicationGuildCommands(clientId, guildId),
+            { body: commands },
+        );
 
-
-const ALL_COMMANDS = [REGISTER_NEW_SURVIVOR_COMMAND];
-
-InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
+        console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+    } catch (error) {
+        // And of course, make sure you catch and log any errors!
+        console.error(error);
+    }
+})();
