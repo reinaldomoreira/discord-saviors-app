@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, PermissionsBitField} = require('discord.js');
+const {SlashCommandBuilder, PermissionsBitField, ChannelType} = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,10 +8,12 @@ module.exports = {
         .addStringOption(option =>
             option.setName('input')
                 .setDescription('The input to echo')
+                .setMaxLength(2_000)
                 .setRequired(true))
         .addChannelOption(option =>
             option.setName('channel')
                 .setDescription('The channel to send the message to')
+                .addChannelTypes(ChannelType.GuildText)
                 .setRequired(false)),
     async execute(interaction) {
         console.log(interaction);

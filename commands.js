@@ -37,6 +37,10 @@ const rest = new REST().setToken(token);
     try {
         console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
+        await rest.delete(Routes.applicationGuildCommand(clientId, guildId, 1291829874348130337))
+            .then(() => console.log('Successfully deleted guild command'))
+            .catch(console.error);
+
         const data = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
             { body: commands },
