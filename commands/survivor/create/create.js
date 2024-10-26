@@ -6,19 +6,23 @@ const rcon = require('../../../utils/rcon');
 const survivorRoleId = '1221553397522632775';
 // const newPlayerRoleId = '1291957927535710218';
 
+const KEY_NICK = 'nick';
+const KEY_PASSWD = 'senha';
+const KEY_DISCORD = 'discord';
+
 function setUp(command) {
     return command.setName('create')
         .setDescription('Cria um sobrevivente.')
         .addStringOption(option =>
-            option.setName('nick')
+            option.setName(KEY_NICK)
                 .setDescription('Nome do sobrevivente')
                 .setRequired(false))
         .addStringOption(option =>
-            option.setName('senha')
+            option.setName(KEY_PASSWD)
                 .setDescription('Senha do sobrevivente')
                 .setRequired(false))
         .addUserOption(option =>
-            option.setName('discord')
+            option.setName(KEY_DISCORD)
                 .setDescription('Usuário do discord')
                 .setRequired(false))
 }
@@ -31,15 +35,15 @@ async function execute(interaction) {
 
 
     const channel = interaction.channel;
-    const memberRequestingCreation = interaction.options.getUser('discord') ?? await getMemberToCreate(interaction);
+    const memberRequestingCreation = await getMemberToCreate(interaction);
 
     if (memberRequestingCreation === undefined) {
-        await interaction.reply('usuário do discord para criar não detectado no canal', {ephemeral: true});
+        await intUtils.respondInteraction(interaction, 'usuário do discord para criar não detectado no canal');
         return;
     }
 
     if (await addSurvivorRole(memberRequestingCreation)) {
-        await channel.send('usuário ' + memberRequestingCreation.user.username + ' adicionado ao cargo de sobrevivente.', {ephemeral: true});
+        await intUtils.respondInteraction(interaction, 'usuário ' + memberRequestingCreation.user.username + ' adicionado ao cargo de sobrevivente.');
     }
 
     const message = (await channel.messages.fetch()).last();
@@ -56,13 +60,8 @@ async function execute(interaction) {
 
     const result = await rcon.message(`adduser \"${nicknameRequested}\" ${password}`);
 
-    if (result.stdout?.includes("already exists")) {
+    if (result.stdout?.includes("already exists") || result.stdout?.includes("Invalid username")) {
         await intUtils.respondInteraction(interaction, "Usuário " + nicknameRequested + " já existe, por favor, abra um novo ticket com um novo nick.", false);
-        return;
-    }
-
-    if (result.stdout?.includes("Invalid username")) {
-        await intUtils.respondInteraction(interaction, "Usuário " + nicknameRequested + " é inválido, por favor, abra um novo ticket com um novo nick.", false);
         return;
     }
 
@@ -75,15 +74,14 @@ async function execute(interaction) {
     if (result.stdout?.includes("success") || result.stdout?.includes("created")) {
         await intUtils.respondInteraction(interaction, "Usuário " + nicknameRequested + " criado no servidor");
         await memberRequestingCreation.setNickname(nicknameRequested);
-        await intUtils.respondInteraction(interaction, 'apelido alterado de ' + memberRequestingCreation.username + ' para ' + nicknameRequested + ' no servidor.');
+        await intUtils.respondInteraction(interaction, 'apelido alterado de ' + memberRequestingCreation.user?.username + ' para ' + nicknameRequested + ' no servidor.');
 
 
-        await intUtils.respondInteraction(interaction, 'Usuario enviado via DM, mas caso não chegue, aqui está!\n\nUsuário: ' + nicknameRequested + '\nSenha: ' + password, false);
         try {
             await memberRequestingCreation.send('Seja bem vindo ao servidor Saviors!\n\nUsuário: ' + nicknameRequested + '\nSenha: ' + password);
         } catch (e) {
             console.error(e);
-            await intUtils.respondInteraction(interaction, 'Não foi possível enviar por DM, então, por favor anote sua senha pois você não terá acesso a este ticket depois.', false);
+            await intUtils.respondInteraction(interaction, 'Não foi possível enviar por DM, então, por favor anote sua senha pois você não terá acesso a este ticket depois.\n\nUsuário: ' + nicknameRequested + '\nSenha: ' + password, false);
         }
     }
 }
@@ -94,6 +92,12 @@ module.exports = {
 };
 
 async function getMemberToCreate(interaction) {
+    const user = interaction.options.getUser(KEY_DISCORD);
+
+    if(user !== null) {
+        return interaction.guild.members.cache.find(member => member.user.id === user.id);
+    }
+
     const members = interaction.channel.members;
 
     return members.find(member => member.user.bot === false
