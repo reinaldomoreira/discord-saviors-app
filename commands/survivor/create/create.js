@@ -58,7 +58,7 @@ async function execute(interaction) {
 
     const password = interaction.options.getString('senha') ?? await generateRandomPassword();
 
-    const result = await rcon.message(`adduser \"${nicknameRequested}\" ${password}`);
+    const result = await rcon.execute(`adduser \"${nicknameRequested}\" ${password}`);
 
     if (result.stdout?.includes("already exists") || result.stdout?.includes("Invalid username")) {
         await intUtils.respondInteraction(interaction, "Usuário " + nicknameRequested + " já existe, por favor, abra um novo ticket com um novo nick.", false);

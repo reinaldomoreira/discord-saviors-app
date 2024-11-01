@@ -1,4 +1,4 @@
-async function message(message) {
+async function execute(message) {
     const util = require('util');
     const exec = util.promisify(require('child_process').exec);
     try {
@@ -11,5 +11,5 @@ async function message(message) {
 }
 
 module.exports = {
-    message: message
+    execute: execute
 }
