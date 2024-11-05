@@ -52,7 +52,7 @@ async function execute(interaction) {
     await intUtils.respondInteraction(interaction, 'verificando se existe ' + nicknameRequested + ' no servidor.');
 
     if (interaction.guild.members.cache.find(member => member.nickname === nicknameRequested)) {
-        await intUtils.respondInteraction(interaction, "usuário " + nicknameRequested + " já existe no servidor do discord, por favor, abra um novo ticket com um novo nick.", false);
+        await intUtils.respondInteraction(interaction, "usuário " + nicknameRequested + " já existe no servidor do discord, por favor, abra um novo ticket com um novo nick.");
         return;
     }
 
@@ -76,9 +76,9 @@ async function execute(interaction) {
         await memberRequestingCreation.setNickname(nicknameRequested);
         await intUtils.respondInteraction(interaction, 'apelido alterado de ' + memberRequestingCreation.user?.username + ' para ' + nicknameRequested + ' no servidor.');
 
-
         try {
             await memberRequestingCreation.send('Seja bem vindo ao servidor Saviors!\n\nUsuário: ' + nicknameRequested + '\nSenha: ' + password);
+            await intUtils.respondInteraction(interaction, 'Enviei por DM sua senha, por favor anote-a para usá-la no jogo.', false);
         } catch (e) {
             console.error(e);
             await intUtils.respondInteraction(interaction, 'Não foi possível enviar por DM, então, por favor anote sua senha pois você não terá acesso a este ticket depois.\n\nUsuário: ' + nicknameRequested + '\nSenha: ' + password, false);
@@ -94,7 +94,7 @@ module.exports = {
 async function getMemberToCreate(interaction) {
     const user = interaction.options.getUser(KEY_DISCORD);
 
-    if(user !== null) {
+    if (user !== null) {
         return interaction.guild.members.cache.find(member => member.user.id === user.id);
     }
 

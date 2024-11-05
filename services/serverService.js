@@ -6,32 +6,25 @@ const status = {
 };
 
 function parsePlayerOnline(stdout) {
-    if(stdout.includes('No players')) {
+    if (stdout.includes('No players')) {
         return 0;
     }
-    if(stdout.includes('Players connected')) {
-        const regex = RegExp("Players connected: \([0-9]+\)");
-
-        // get the capturing group of the regex match
-        const match = regex.exec(stdout)[1];
-        return parseInt(match);
+    if (stdout.includes('Players connected')) {
+        return parseInt(stdout.match("Players connected \\((\\d+)")[1]);
     }
 }
 
 async function getServerStatus() {
     let serverStatus = {};
 
-    try {
-        const command = await rcon.execute('players');
-        const playersOnline = parsePlayerOnline(command.stdout);
-        if(playersOnline !== undefined) {
-            serverStatus.status = status.ONLINE;
-            serverStatus.playersOnline = playersOnline;
-        }
-        serverStatus.status = status.ONLINE;
-    } catch (e) {
-        serverStatus.status = status.OFFLINE;
+    const command = await rcon.execute('players');
+    const playersOnline = parsePlayerOnline(command.stdout);
+
+    if (playersOnline === undefined) {
+        throw new Error('Failed to parse players online');
     }
+    serverStatus.playersOnline = playersOnline;
+    serverStatus.status = status.ONLINE;
 
     return serverStatus;
 }

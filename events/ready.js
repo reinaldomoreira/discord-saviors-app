@@ -1,12 +1,21 @@
-const {Events} = require('discord.js');
+const {Events, ActivityType} = require('discord.js');
 const path = require('node:path');
 const fs = require('node:fs');
+const serverService = require("../services/serverService");
+
+async function setPresence(client) {
+    await client.user.setPresence({
+        status: 'dnd',
+        activities: [{name: 'Saviors ', type: ActivityType.Playing}]
+    });
+}
 
 module.exports = {
     name: Events.ClientReady,
     once: true,
     async execute(client) {
         console.log(`Ready! Logged in as ${client.user.tag}`);
+        await setPresence(client);
 
         const cron = require('node-cron');
 
@@ -30,4 +39,4 @@ module.exports = {
             }
         }
     },
-};
+}
