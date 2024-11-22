@@ -49,12 +49,11 @@ async function execute(interaction) {
     const message = (await channel.messages.fetch()).last();
     const nicknameRequested = interaction.options.getString('nick') ?? message.embeds[1].fields[0].value;
 
-    await intUtils.respondInteraction(interaction, 'verificando se existe ' + nicknameRequested + ' no servidor.');
-
-    if (interaction.guild.members.cache.find(member => member.nickname === nicknameRequested)) {
-        await intUtils.respondInteraction(interaction, "usuário " + nicknameRequested + " já existe no servidor do discord, por favor, abra um novo ticket com um novo nick.");
-        return;
-    }
+    // await intUtils.respondInteraction(interaction, 'verificando se existe ' + nicknameRequested + ' no servidor do discord.');
+    // if (interaction.guild.members.cache.find(member => member.nickname === nicknameRequested)) {
+    //     await intUtils.respondInteraction(interaction, "usuário " + nicknameRequested + " já existe no servidor do discord, por favor, abra um novo ticket com um novo nick.");
+    //     return;
+    // }
 
     const password = interaction.options.getString('senha') ?? await generateRandomPassword();
 
