@@ -70,9 +70,9 @@ async function execute(interaction) {
         return;
     }
 
+    await intUtils.respondInteraction(interaction, "Usuário " + nicknameRequested + " criado no servidor");
+    await memberRequestingCreation.setNickname(nicknameRequested);
     if (result.stdout?.includes("success") || result.stdout?.includes("created")) {
-        await intUtils.respondInteraction(interaction, "Usuário " + nicknameRequested + " criado no servidor");
-        await memberRequestingCreation.setNickname(nicknameRequested);
         await intUtils.respondInteraction(interaction, 'apelido alterado de ' + memberRequestingCreation.user?.username + ' para ' + nicknameRequested + ' no servidor.');
 
         try {
