@@ -7,7 +7,7 @@ const serverStatusChannelId = '1302027406244053062';
 
 module.exports = {
     name: 'serverStatus',
-    frequency: cronHelper.everyMinute(),
+    frequency: cronHelper.everyFifteenSecond(),
     execute: async function (client) {
 
         const peopleOnlineChannel = await client.channels.fetch(peopleOnlineChannelId);
@@ -15,10 +15,11 @@ module.exports = {
 
         try {
             const serverStatus = await serverService.serverStatus();
-            serverStatusChannel.setName(`︱server︰${serverStatus.status} ☻`);
-            peopleOnlineChannel.setName(`︱online agora︰${serverStatus.playersOnline}`);
+            serverStatusChannel.setName(`︱server︱${serverStatus.status}☻`);
+            peopleOnlineChannel.setName(`︱online agora︱${serverStatus.playersOnline}`);
         } catch (e) {
-            serverStatusChannel.setName(`︱server︰${serverService.status.OFFLINE}`);
+            serverStatusChannel.setName(`︱server︱${serverService.status.OFFLINE}`);
+            peopleOnlineChannel.setName(`︱online agora︱0`);
         }
     },
 }

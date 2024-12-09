@@ -16,7 +16,10 @@ function parsePlayerOnline(stdout) {
 }
 
 async function getServerStatus() {
-    let serverStatus = {};
+    let serverStatus = {
+        status: status.OFFLINE,
+        playersOnline: 0,
+    };
 
     const command = await rcon.execute('players');
     if (command?.stdout.includes('layers')) {

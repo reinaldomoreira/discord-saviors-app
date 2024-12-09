@@ -57,6 +57,9 @@ async function execute(interaction) {
 
     const password = interaction.options.getString('senha') ?? await generateRandomPassword();
 
+    await memberRequestingCreation.setNickname(nicknameRequested);
+    await intUtils.respondInteraction(interaction, 'apelido alterado de ' + memberRequestingCreation.user?.username + ' para ' + nicknameRequested + ' no servidor.');
+
     const result = await rcon.execute(`adduser \"${nicknameRequested}\" ${password}`);
 
     if (result.stdout?.includes("already exists") || result.stdout?.includes("Invalid username")) {
@@ -71,9 +74,7 @@ async function execute(interaction) {
     }
 
     await intUtils.respondInteraction(interaction, "Usuário " + nicknameRequested + " criado no servidor");
-    await memberRequestingCreation.setNickname(nicknameRequested);
     if (result.stdout?.includes("success") || result.stdout?.includes("created")) {
-        await intUtils.respondInteraction(interaction, 'apelido alterado de ' + memberRequestingCreation.user?.username + ' para ' + nicknameRequested + ' no servidor.');
 
         try {
             await memberRequestingCreation.send('Seja bem vindo ao servidor Saviors!\n\nUsuário: ' + nicknameRequested + '\nSenha: ' + password);

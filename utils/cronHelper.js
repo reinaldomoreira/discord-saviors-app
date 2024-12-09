@@ -6,7 +6,12 @@ function everySecond() {
     return "* * * * * *";
 }
 
+function everyFifteenSecond() {
+    return "*/15 * * * * *";
+}
+
 module.exports = {
     everyMinute: everyMinute,
-    everySecond: everySecond
+    everySecond: everySecond,
+    everyFifteenSecond: everyFifteenSecond
 }
