@@ -10,7 +10,7 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "start": "node inspect --port=9229 --watch app.js",
+    "start": "node --watch app.js",
     "register": "node commands.js"
   },
   "dependencies": {

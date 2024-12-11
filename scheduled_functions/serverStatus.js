@@ -15,11 +15,11 @@ module.exports = {
 
         try {
             const serverStatus = await serverService.serverStatus();
-            serverStatusChannel.setName(`︱server︱${serverStatus.status}☻`);
-            peopleOnlineChannel.setName(`︱online agora︱${serverStatus.playersOnline}`);
+            serverStatusChannel.setName('︱server︱' + serverStatus.status);
+            peopleOnlineChannel.setName(serverStatus.playersOnline + '︱online agora︱' + serverStatus.playersOnline);
         } catch (e) {
-            serverStatusChannel.setName(`︱server︱${serverService.status.OFFLINE}`);
-            peopleOnlineChannel.setName(`︱online agora︱0`);
+            serverStatusChannel.setName('︱server︱' + serverService.status.OFFLINE);
+            peopleOnlineChannel.setName('︱online agora︱0');
         }
     },
 }
