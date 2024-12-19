@@ -2,8 +2,8 @@ const {ActivityType} = require('discord.js');
 const cronHelper = require('../utils/cronHelper');
 const serverService = require('../services/serverService');
 
-const peopleOnlineChannelId = '1302022686091776010';
-const serverStatusChannelId = '1302027406244053062';
+const serverStatusChannelId = '1319369975403905104';
+const peopleOnlineChannelId = '1319370413842894918';
 
 module.exports = {
     name: 'serverStatus',
@@ -16,7 +16,7 @@ module.exports = {
         try {
             const serverStatus = await serverService.serverStatus();
             serverStatusChannel.setName('︱server︱' + serverStatus.status);
-            peopleOnlineChannel.setName(serverStatus.playersOnline + '︱online agora︱' + serverStatus.playersOnline);
+            peopleOnlineChannel.setName('︱online agora︱' + serverStatus.playersOnline);
         } catch (e) {
             serverStatusChannel.setName('︱server︱' + serverService.status.OFFLINE);
             peopleOnlineChannel.setName('︱online agora︱0');
