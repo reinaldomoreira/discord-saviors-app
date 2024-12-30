@@ -11,7 +11,8 @@
   },
   "scripts": {
     "start": "node --watch app.js",
-    "register": "node commands.js"
+    "register": "node commands.js",
+	"debug": "node --inspect --watch app.js"
   },
   "dependencies": {
     "crypto": "^1.0.1",

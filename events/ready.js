@@ -33,7 +33,7 @@ module.exports = {
                     } catch (error) {
                         console.error(`Error running scheduled function ${func.name}: ${error}`);
                     }
-                });
+                }).start();
             } else {
                 console.log(`[WARNING] The function at ${filePath} is missing a required "execute" or "frequency" property.`);
             }

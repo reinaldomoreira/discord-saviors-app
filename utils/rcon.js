@@ -5,7 +5,6 @@ async function execute(message) {
         const {stdout, stderr} = await exec("/games/rcon/rcon --config /games/Zomboid/Server/rcon.yaml '" + message + "'");
         return {stdout, stderr};
     } catch (err) {
-        console.error(err);
         return {stdout: null, stderr: err};
     }
 }
