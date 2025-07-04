@@ -1,6 +1,9 @@
+import { CronJob } from 'cron';
+
 function schedule(frequency, func) {
-    const cron = require('node-cron');
-    return cron.schedule(frequency, func);
+    const job = new CronJob(frequency, func, null, true);
+    job.start();
+    return job;
 }
 
 function everyMinute() {

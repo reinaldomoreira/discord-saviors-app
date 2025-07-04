@@ -18,7 +18,8 @@
     "crypto": "^1.0.1",
     "discord.js": "^14.16.3",
     "dotenv": "^16.0.3",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+	"cron": "^5.0.0-beta.1"
   },
   "devDependencies": {
     "eslint": "^9.12.0"
