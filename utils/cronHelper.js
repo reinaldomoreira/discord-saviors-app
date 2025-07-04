@@ -2,9 +2,7 @@ require('cron')
 const {CronJob} = require("cron");
 
 function schedule(frequency, func) {
-    const job = new CronJob(frequency, func, null, true);
-    job.start();
-    return job;
+    return new CronJob(frequency, func, null, true);
 }
 
 function everyMinute() {
