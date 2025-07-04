@@ -1,4 +1,5 @@
-import { CronJob } from 'cron';
+require('cron')
+const {CronJob} = require("cron");
 
 function schedule(frequency, func) {
     const job = new CronJob(frequency, func, null, true);
