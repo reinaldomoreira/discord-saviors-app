@@ -2,6 +2,7 @@ const {Events, ActivityType} = require('discord.js');
 const path = require('node:path');
 const fs = require('node:fs');
 const serverService = require("../services/serverService");
+const cronHelper = require("../utils/cronHelper");
 
 async function setPresence(client) {
     await client.user.setPresence({
@@ -27,7 +28,7 @@ module.exports = {
             const func = require(filePath);
             if ('execute' in func && 'frequency' in func && 'name' in func) {
                 console.log(`Scheduling function ${func.name} to run in ${func.frequency}`);
-                cron.schedule(func.frequency, async () => {
+                cronHelper.schedule(func.frequency, async () => {
                     try {
                         await func.execute(client);
                     } catch (error) {

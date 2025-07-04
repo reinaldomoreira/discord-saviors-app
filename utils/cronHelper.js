@@ -1,3 +1,8 @@
+function schedule(frequency, func) {
+    const cron = require('node-cron');
+    return cron.schedule(frequency, func);
+}
+
 function everyMinute() {
     return "* * * * *";
 }
@@ -13,5 +18,6 @@ function everyFifteenSecond() {
 module.exports = {
     everyMinute: everyMinute,
     everySecond: everySecond,
-    everyFifteenSecond: everyFifteenSecond
+    everyFifteenSecond: everyFifteenSecond,
+    schedule: schedule
 }
