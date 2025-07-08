@@ -22,7 +22,7 @@ async function getServerStatus() {
     };
 
     const command = await rcon.execute('players');
-    if (command?.stdout.includes('layers')) {
+    if (command.stdout?.includes('layers')) {
         serverStatus.playersOnline = parsePlayerOnline(command.stdout);
         serverStatus.status = status.ONLINE;
 
