@@ -13,3 +13,7 @@ export function getGameData() {
 
 
 }
+
+module.exports = {
+    getGameData: getGameData
+}
