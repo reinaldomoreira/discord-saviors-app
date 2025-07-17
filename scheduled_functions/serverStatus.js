@@ -1,6 +1,6 @@
-const {ActivityType} = require('discord.js');
 const cronHelper = require('../utils/cronHelper');
 const serverService = require('../services/serverService');
+const {getGameData} = require("../utils/gameData");
 
 const serverStatusChannelId = '1319369975403905104';
 const peopleOnlineChannelId = '1319370413842894918';
@@ -12,6 +12,7 @@ module.exports = {
         let serverStatusChannel;
         let peopleOnlineChannel;
         try {
+            getGameData()
             peopleOnlineChannel = await client.channels.fetch(peopleOnlineChannelId);
             serverStatusChannel = await client.channels.fetch(serverStatusChannelId);
             const serverStatus = await serverService.serverStatus();
